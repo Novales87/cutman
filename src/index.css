@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    overflow-y: scroll; /* Enable vertical scrolling */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+  }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+.chat-button {
+  position: fixed;
+  bottom: 20px; /* Subir el botón 20px desde abajo */
+  right: 20px;
+  padding: 16px;
+  border-radius: 50%;
+  background-color: #4B5563; /* Color gris original */
+  color: white;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: background-color 0.5s ease, transform 0.3s ease;
+  animation: color-change 3s infinite alternate; /* Animación de cambio de color */
+}
+
+.chat-button:hover {
+  background-color: #6B7280; /* Gris más claro al pasar el mouse */
+  transform: scale(1.05);
+}
+
+@keyframes color-change {
+  0% { background-color: #4B5563; } /* Gris */
+  50% { background-color: #16A34A; } /* Verde */
+  100% { background-color: #3B82F6; } /* Azul */
+}
