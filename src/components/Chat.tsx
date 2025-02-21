@@ -25,6 +25,7 @@ function Chat() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (userInfo) {
@@ -34,6 +35,12 @@ function Chat() {
 
   useEffect(() => {
     inputRef.current?.focus();
+  }, [messages]);
+
+  useEffect(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   }, [messages]);
 
   const handleSendMessage = async () => {
@@ -132,7 +139,7 @@ function Chat() {
             </button>
           </div>
 
-          <div className="flex-1 p-4 overflow-y-auto">
+          <div className="flex-1 p-4 overflow-y-auto" ref={messagesContainerRef}>
             {showForm && !userInfo ? (
               <UserInfoForm onStartChat={handleStartChat} />
             ) : (
