@@ -1,5 +1,8 @@
 import { Scissors, Clock, Phone, MapPin, Mail } from 'lucide-react';
 import Chat from './components/Chat';
+import corteCabelloImage from './pictures/corte.jpg';
+import corteBarbaImage from './pictures/corte y barba.jpg';
+import barbaImage from './pictures/barba.jpg';
 
 function App() {
   const currentYear = new Date().getFullYear();
@@ -53,22 +56,22 @@ function App() {
                 title: 'Corte de Cabello',
                 price: '$10.800,00',
                 Time: 'Duración 30 minutos',
-                image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ1zgZnxIfFwUNYBcDxTaoorL1Oj0QaozmZw&s'
+                image: corteCabelloImage
               },
               {
                 id: 'corte-barba',
                 title: 'Corte y Barba',
                 price: '$11.300,00',
                 Time: 'Duración 40 minutos',
-                image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ1zgZnxIfFwUNYBcDxTaoorL1Oj0QaozmZw&s'
+                image: corteBarbaImage
               },
               {
                 id: 'barba',
                 title: 'Barba',
                 price: '$5.100,00',
                 Time: 'Duración 30 minutos',
-                image: '/src/Pictures/barba.jpg'
-              }
+                image: barbaImage
+              },
             ].map((service) => (
               <div key={service.id} className="bg-white rounded-lg overflow-hidden shadow-lg">
                 <img src={service.image} alt={service.title} className="w-full h-96 object-cover" /> {/* Aumentar altura de imagen a h-96 */}
