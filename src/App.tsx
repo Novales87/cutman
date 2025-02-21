@@ -28,7 +28,7 @@ function App() {
       <section id="hero" className="relative h-[600px]">
         <div className="absolute inset-0">
           <img
-            src="/src/Pictures/portada.jpg"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ1zgZnxIfFwUNYBcDxTaoorL1Oj0QaozmZw&s"
             alt="Salon de belleza"
             className="w-full h-full object-cover"
           />
@@ -53,14 +53,14 @@ function App() {
                 title: 'Corte de Cabello',
                 price: '$10.800,00',
                 Time: 'Duración 30 minutos',
-                image: '/src/Pictures/corte.jpg'
+                image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ1zgZnxIfFwUNYBcDxTaoorL1Oj0QaozmZw&s'
               },
               {
                 id: 'corte-barba',
                 title: 'Corte y Barba',
                 price: '$11.300,00',
                 Time: 'Duración 40 minutos',
-                image: '/src/Pictures/corte y barba.jpg'
+                image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ1zgZnxIfFwUNYBcDxTaoorL1Oj0QaozmZw&s'
               },
               {
                 id: 'barba',

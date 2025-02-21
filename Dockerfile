@@ -1,15 +1,27 @@
-FROM node:18-alpine
+# Etapa de construcción
+FROM node:18 AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+# Copiar archivos de dependencias y instalar
+COPY package.json package-lock.json ./
+RUN npm install --frozen-lockfile
 
+# Copiar el código fuente y construir la aplicación
 COPY . .
-
 RUN npm run build
 
-RUN npm install -g serve
-EXPOSE 3000
+# Etapa de producción con Nginx
+FROM nginx:alpine
 
-CMD ["serve", "-s", "dist", "-p", "3000"]
+# Copiar configuración de Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copiar los archivos generados en la build
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Exponer el puerto 80
+EXPOSE 80
+
+# Iniciar Nginx
+CMD ["nginx", "-g", "daemon off;"]
