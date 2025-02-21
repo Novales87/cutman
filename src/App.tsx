@@ -3,6 +3,8 @@ import Chat from './components/Chat';
 import corteCabelloImage from './pictures/corte.jpg';
 import corteBarbaImage from './pictures/corte y barba.jpg';
 import barbaImage from './pictures/barba.jpg';
+import portadaImage from './pictures/portada.jpg';
+import aperturaImage from './pictures/apertura.jpg';
 
 function App() {
   const currentYear = new Date().getFullYear();
@@ -31,7 +33,7 @@ function App() {
       <section id="hero" className="relative h-[600px]">
         <div className="absolute inset-0">
           <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ1zgZnxIfFwUNYBcDxTaoorL1Oj0QaozmZw&s"
+            src={portadaImage}
             alt="Salon de belleza"
             className="w-full h-full object-cover"
           />
@@ -104,7 +106,7 @@ function App() {
             </div>
             <div className="md:w-1/2">
               <img
-                src="https://gcdnb.pbrd.co/images/Aah32ZEzs5HJ.jpg?o=1"
+                src={aperturaImage}
                 alt="Salon interior"
                 className="rounded-lg shadow-lg h-[72%]"
               />
