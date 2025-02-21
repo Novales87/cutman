@@ -101,7 +101,7 @@ function App() {
             </div>
             <div className="md:w-1/2">
               <img
-                src="/src/Pictures/apertura.jpg"
+                src="https://gcdnb.pbrd.co/images/Aah32ZEzs5HJ.jpg?o=1"
                 alt="Salon interior"
                 className="rounded-lg shadow-lg h-[72%]"
               />
