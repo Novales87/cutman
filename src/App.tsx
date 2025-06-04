@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Scissors, Clock, Phone, MapPin, Mail, Sun, Moon } from 'lucide-react';
+import { Scissors, Clock, Phone, MapPin, Sun, Moon } from 'lucide-react';
 import Chat from './components/Chat';
 import corteCabelloImage from './pictures/corte.jpg';
 import corteBarbaImage from './pictures/corte y barba.jpg';
@@ -40,7 +40,7 @@ function App() {
               <span className="text-sm block ml-4">Barber & Outfitters.</span>
             </div>
           </div>
-          <div className="hidden md:flex space-x-4">
+          <div className="hidden md:flex space-x-4 items-center">
             <a href="#servicios" className="text-base hover:text-gray-200">Servicios</a>
             <a href="#horario" className="text-base hover:text-gray-200">Horario</a>
             <a href="#ubicacion" className="text-base hover:text-gray-200">Ubicación</a>
@@ -49,6 +49,10 @@ function App() {
               {theme === 'light' ? <Moon className="w-6 h-6 text-white" /> : <Sun className="w-6 h-6 text-white" />}
             </button>
           </div>
+          {/* Botón de tema para pantallas pequeñas */}
+          <button onClick={toggleTheme} className="flex md:hidden p-2 rounded-full bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 ml-auto">
+            {theme === 'light' ? <Moon className="w-6 h-6 text-white" /> : <Sun className="w-6 h-6 text-white" />}
+          </button>
         </nav>
       </header>
 
@@ -156,8 +160,8 @@ function App() {
                 title="Google Maps Location"
               ></iframe>
             </div>
-            <div className="flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0 md:space-x-12 mt-6">
-              <div className="flex items-center space-x-4">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-center space-y-6 md:space-y-0 md:space-x-12 mt-6">
+              <div className="flex items-start space-x-4">
                 <MapPin className="w-8 h-8 text-gray-800 dark:text-gray-200" />
                 <div>
                   <p className="font-semibold text-gray-900 dark:text-white">Dirección</p>
@@ -165,7 +169,7 @@ function App() {
                   <p className="text-gray-800 dark:text-gray-200">Dique Luján, Provincia de Buenos</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-start space-x-4">
                 <Phone className="w-8 h-8 text-gray-800 dark:text-gray-200" />
                 <div>
                   <p className="font-semibold text-gray-900 dark:text-white">Teléfono</p>
@@ -180,23 +184,6 @@ function App() {
       {/* Footer */}
       <footer id="contacto" className="bg-gray-800 text-white dark:bg-gray-950 py-6"> {/* Reduce padding vertical */}
         <div className="container mx-auto px-6 text-center justify-center"> {/* Centrar contenido horizontalmente */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 hidden"> {/* Simplificar grid en pantallas pequeñas y ocultar */}
-            <div>
-              
-              
-            </div>
-            <div>
-              
-              <div className="flex justify-center space-x-4 hidden"> {/* Centrar y espacio y ocultar */}
-                <p className="flex items-center">
-                  <Phone className="w-5 h-5 mr-2" /> +34 912 345 678
-                </p>
-                <p className="flex items-center">
-                  <Mail className="w-5 h-5 mr-2" /> info@thecutmanco.com
-                </p>
-              </div>
-            </div>
-          </div>
           <div className="mt-8">
             <p>© {currentYear} The Cutman Co. Todos los derechos reservados.</p>
           </div>
