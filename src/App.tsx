@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Scissors, Clock, Phone, MapPin, Mail, Sun, Moon } from 'lucide-react';
 import Chat from './components/Chat';
 import corteCabelloImage from './pictures/corte.jpg';
