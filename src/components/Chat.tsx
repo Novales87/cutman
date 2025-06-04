@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Send } from 'lucide-react';
+import { Bot, Send } from 'lucide-react'; // Importar ambos iconos
 import UserInfoForm from './UserInfoForm';
 
 interface UserInfo {
@@ -24,6 +24,7 @@ function Chat() {
   const [showForm, setShowForm] = useState(true);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [showWelcomeDialog, setShowWelcomeDialog] = useState(false); // Nuevo estado
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -32,6 +33,14 @@ function Chat() {
       setSessionId(uuidv4());
     }
   }, [userInfo]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowWelcomeDialog(prev => !prev); // Alternar el estado
+    }, 3000); // Cada 3 segundos
+
+    return () => clearInterval(interval); // Limpiar el intervalo
+  }, []);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -118,21 +127,27 @@ function Chat() {
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
+      {!isChatOpen && (
+        <div className={`absolute bottom-20 right-4 bg-blue-600 text-white dark:bg-blue-800 dark:text-gray-200 p-3 rounded-lg shadow-lg max-w-xs text-sm transition-opacity duration-500 ${showWelcomeDialog ? 'opacity-100' : 'opacity-0'}`}>
+          ¡Bienvenido! ¿Querés agendar un turno?
+          <div className="absolute bottom-0 right-4 w-3 h-3 bg-blue-600 dark:bg-blue-800 transform rotate-45 translate-y-1/2"></div>
+        </div>
+      )}
       {!isChatOpen ? (
         <button
           onClick={() => setIsChatOpen(true)}
           className="chat-button bg-gray-800 text-white rounded-full p-4 shadow-lg hover:bg-gray-900 transition-colors z-50"
           aria-label="Abrir chat"
         >
-          <Send className="w-6 h-6" />
+          <Bot className="w-6 h-6" /> {/* Cambiado de Send a Bot */}
         </button>
       ) : (
-        <div className="bg-white rounded-lg shadow-xl w-96 h-[550px] flex flex-col">
-          <div className="bg-gray-800 text-white p-4 rounded-t-lg flex justify-between items-center">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl w-96 h-[550px] flex flex-col">
+          <div className="bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-100 p-4 rounded-t-lg flex justify-between items-center">
             <h3 className="font-semibold">Chatea con nosotros</h3>
             <button
               onClick={() => setIsChatOpen(false)}
-              className="text-white hover:text-gray-200"
+              className="text-white hover:text-gray-200 dark:text-gray-100 dark:hover:text-gray-300"
               aria-label="Cerrar chat"
             >
               ✕
@@ -145,7 +160,7 @@ function Chat() {
             ) : (
               <>
                 {messages.length === 0 && (
-                  <div className="text-center text-gray-500 mt-4">
+                  <div className="text-center text-gray-500 dark:text-gray-400 mt-4">
                     ¡Hola! ¿En qué podemos ayudarte?
                   </div>
                 )}
@@ -155,7 +170,7 @@ function Chat() {
                     className={`mb-2 ${msg.fromUser ? 'text-right' : 'text-left'}`}
                     >
                     <span
-                      className={`inline-block p-2 rounded-lg ${msg.fromUser ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'} max-w-[80%] break-words`}
+                      className={`inline-block p-2 rounded-lg ${msg.fromUser ? 'bg-gray-800 text-white dark:bg-blue-700 dark:text-white' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'} max-w-[80%] break-words`}
                     >
                       {msg.text}
                     </span>
@@ -163,7 +178,7 @@ function Chat() {
                 ))}
                 {isLoading && (
                   <div className="text-left mb-2">
-                    <span className="inline-block p-2 rounded-lg bg-gray-100 text-gray-500">
+                    <span className="inline-block p-2 rounded-lg bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
                       Escribiendo...
                     </span>
                   </div>
@@ -172,7 +187,7 @@ function Chat() {
             )}
           </div>
 
-          <div className="p-4 border-t">
+          <div className="p-4 border-t dark:border-gray-700">
             {!showForm && userInfo && (
               <div className="flex gap-2">
                 <input
@@ -183,16 +198,16 @@ function Chat() {
                   onKeyDown={handleKeyPress}
                   placeholder="Escribe tu mensaje..."
                   disabled={isLoading}
-                  className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 dark:focus:ring-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 dark:disabled:text-gray-400 disabled:cursor-not-allowed dark:bg-gray-800 dark:text-white dark:border-gray-700"
                   aria-label="Mensaje"
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={isLoading || !newMessage.trim()}
-                  className="bg-gray-800 text-white p-2 rounded-lg hover:bg-gray-900 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+                  className="bg-gray-800 text-white p-2 rounded-lg hover:bg-gray-900 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors disabled:bg-gray-600 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
                   aria-label="Enviar mensaje"
                 >
-                  <Send className="w-5 h-5" />
+                  <Send className="w-5 h-5" /> {/* Cambiado de Bot a Send */}
                 </button>
               </div>
             )}
