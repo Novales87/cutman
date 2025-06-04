@@ -126,7 +126,7 @@ function App() {
                   <Clock className="w-6 h-6 text-gray-800 dark:text-gray-200 mr-4" />
                   <div>
                     <p className="font-semibold text-gray-900 dark:text-white">Lunes a Sabado</p>
-                    <p className="text-gray-800 dark:text-gray-200">9:00 - 20:00</p>
+                    <p className="text-gray-800 dark:text-gray-200">10:00 - 20:00</p>
                   </div>
                 </div>
                 </div>

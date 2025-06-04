@@ -17,11 +17,16 @@ export default {
           '0%, 100%': { background: '#1f2937' }, // Tailwind gray-800 (original)
           '50%': { background: '#007bff' }, // Blue color
         },
+        'fade-in': { // Nueva animación fade-in
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
       },
       animation: {
         'pulse-grow': 'pulse-grow 1.5s ease-in-out infinite', // Existing pulse-grow animation
         'fade-in-out': 'fade-in-out 1.5s ease-in-out infinite', // Simplified animation
         'color-transition': 'color-transition 6s ease-in-out infinite', // Increased duration to 6s for subtle transition
+        'fade-in': 'fade-in 0.5s ease-out forwards', // Nueva animación fade-in
       },
     },
   },
