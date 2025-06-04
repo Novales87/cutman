@@ -64,7 +64,7 @@ function Chat() {
       chatInput: newMessage,
       userName: userInfo?.name ?? ''
     };
-    const webhookUrl = `http://192.168.1.83:5678/webhook/ab9f632b-402a-41a1-8595-5dd9caf43c78/chat?sessionId=${sessionId}`;
+    const webhookUrl = `${import.meta.env.VITE_WEBHOOK_URL}?sessionId=${sessionId}`;
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
