@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Scissors, Clock, Phone, MapPin, Mail, Sun, Moon } from 'lucide-react';
+import { Scissors, Clock, Phone, MapPin, Sun, Moon } from 'lucide-react';
 import Chat from './components/Chat';
 import corteCabelloImage from './pictures/corte.jpg';
 import corteBarbaImage from './pictures/corte y barba.jpg';
