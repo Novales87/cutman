@@ -40,17 +40,19 @@ function App() {
               <span className="text-sm block ml-4">Barber & Outfitters.</span>
             </div>
           </div>
-          <div className="hidden md:flex md:space-x-4">
+          <div className="hidden md:flex space-x-4 items-center">
             <a href="#servicios" className="text-base hover:text-gray-200">Servicios</a>
             <a href="#horario" className="text-base hover:text-gray-200">Horario</a>
             <a href="#ubicacion" className="text-base hover:text-gray-200">Ubicación</a>
             <a href="#contacto" className="text-base hover:text-gray-200">Contacto</a>
-          </div>
-          <div className="flex items-center"> {/* Contenedor para el botón de tema */}
             <button onClick={toggleTheme} className="p-2 rounded-full bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
               {theme === 'light' ? <Moon className="w-6 h-6 text-white" /> : <Sun className="w-6 h-6 text-white" />}
             </button>
           </div>
+          {/* Botón de tema para pantallas pequeñas */}
+          <button onClick={toggleTheme} className="flex md:hidden p-2 rounded-full bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 ml-auto">
+            {theme === 'light' ? <Moon className="w-6 h-6 text-white" /> : <Sun className="w-6 h-6 text-white" />}
+          </button>
         </nav>
       </header>
 
