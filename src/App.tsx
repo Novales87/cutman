@@ -6,6 +6,7 @@ import corteBarbaImage from './pictures/corte y barba.jpg';
 import barbaImage from './pictures/barba.jpg';
 import portadaImage from './pictures/portada.jpg';
 import aperturaImage from './pictures/apertura.jpg';
+import Login from './components/Login'; // Importar el componente Login
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -14,6 +15,8 @@ function App() {
     }
     return 'light';
   });
+
+  const [showLogin, setShowLogin] = useState(false); // Nuevo estado para controlar la vista de login
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -28,6 +31,11 @@ function App() {
   };
 
   const currentYear = new Date().getFullYear();
+
+  if (showLogin) {
+    return <Login onBackToHome={() => setShowLogin(false)} theme={theme} toggleTheme={toggleTheme} />; // Pasar props de tema
+  }
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 overflow-hidden">
       {/* Header */}
@@ -40,19 +48,17 @@ function App() {
               <span className="text-sm block ml-4">Barber & Outfitters.</span>
             </div>
           </div>
-          <div className="hidden md:flex space-x-4 items-center">
-            <a href="#servicios" className="text-base hover:text-gray-200">Servicios</a>
-            <a href="#horario" className="text-base hover:text-gray-200">Horario</a>
-            <a href="#ubicacion" className="text-base hover:text-gray-200">Ubicación</a>
-            <a href="#contacto" className="text-base hover:text-gray-200">Contacto</a>
+          <div className="flex space-x-4 items-center"> {/* Eliminar hidden md:flex */}
+            <a href="#servicios" className="text-base hover:text-gray-200 hidden md:block">Servicios</a> {/* Ocultar en móviles */}
+            <a href="#horario" className="text-base hover:text-gray-200 hidden md:block">Horario</a> {/* Ocultar en móviles */}
+            <a href="#ubicacion" className="text-base hover:text-gray-200 hidden md:block">Ubicación</a> {/* Ocultar en móviles */}
+            <a href="#contacto" className="text-base hover:text-gray-200 hidden md:block">Contacto</a> {/* Ocultar en móviles */}
+            <button onClick={() => setShowLogin(true)} className="text-base hover:text-gray-200">Login</button> {/* Botón de Login */}
             <button onClick={toggleTheme} className="p-2 rounded-full bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
               {theme === 'light' ? <Moon className="w-6 h-6 text-white" /> : <Sun className="w-6 h-6 text-white" />}
             </button>
           </div>
-          {/* Botón de tema para pantallas pequeñas */}
-          <button onClick={toggleTheme} className="flex md:hidden p-2 rounded-full bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 ml-auto">
-            {theme === 'light' ? <Moon className="w-6 h-6 text-white" /> : <Sun className="w-6 h-6 text-white" />}
-          </button>
+          {/* Eliminar el botón de tema duplicado para pantallas pequeñas, ya que el de arriba ahora es visible en todas las pantallas */}
         </nav>
       </header>
 
