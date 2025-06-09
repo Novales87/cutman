@@ -24,50 +24,51 @@ interface Role {
   sucursalId: number;
 }
 
-const EditUserForm: React.FC<EditUserFormProps> = ({ userId, onClose, onUserUpdated, theme }) => {
-  const [formData, setFormData] = useState<Partial<UserData>>({
-    name: '',
-    lastName: '',
-    email: '',
-    roleId: undefined, // Inicializar como undefined para que el select no tenga un valor por defecto si no hay roles
-    password: '',
-  });
+// Custom hook for fetching roles
+function useRoles() {
+  const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [roles, setRoles] = useState<Role[]>([]); // Nuevo estado para los roles
-  const [rolesLoading, setRolesLoading] = useState(true);
-  const [rolesError, setRolesError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchRoles = async () => {
-      setRolesLoading(true);
-      setRolesError(null);
+      setLoading(true);
+      setError(null);
       try {
         const token = localStorage.getItem('authToken');
-        if (!token) {
-          throw new Error('No autorizado: No se encontró el token de autenticación para roles.');
-        }
+        if (!token) throw new Error('No autorizado: No se encontró el token de autenticación para roles.');
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/roles`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
+          headers: { 'Authorization': `Bearer ${token}` },
         });
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || 'Error al cargar los roles.');
+          throw new Error(errorData.message ?? 'Error al cargar los roles.');
         }
         const data: Role[] = await response.json();
         setRoles(data);
       } catch (err: any) {
-        setRolesError(err.message);
+        setError(err.message);
       } finally {
-        setRolesLoading(false);
+        setLoading(false);
       }
     };
-
     fetchRoles();
-  }, []); // Se ejecuta una sola vez al montar el componente
+  }, []);
+
+  return { roles, loading, error };
+}
+
+// Custom hook for fetching user data
+function useUserData(userId: number) {
+  const [formData, setFormData] = useState<Partial<UserData>>({
+    name: '',
+    lastName: '',
+    email: '',
+    roleId: undefined,
+    password: '',
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -75,28 +76,21 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ userId, onClose, onUserUpda
       setError(null);
       try {
         const token = localStorage.getItem('authToken');
-        if (!token) {
-          throw new Error('No autorizado: No se encontró el token de autenticación.');
-        }
-
+        if (!token) throw new Error('No autorizado: No se encontró el token de autenticación.');
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/${userId}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
+          headers: { 'Authorization': `Bearer ${token}` },
         });
-
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || 'Error al cargar los datos del usuario.');
+          throw new Error(errorData.message ?? 'Error al cargar los datos del usuario.');
         }
-
         const data: UserData = await response.json();
         setFormData({
           name: data.name,
           lastName: data.lastName,
           email: data.email,
           roleId: data.roleId,
-          password: '', // No precargar la contraseña por seguridad
+          password: '',
         });
       } catch (err: any) {
         setError(err.message);
@@ -104,11 +98,108 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ userId, onClose, onUserUpda
         setLoading(false);
       }
     };
-
-    if (userId) {
-      fetchUserData();
-    }
+    if (userId) fetchUserData();
   }, [userId]);
+
+  return { formData, setFormData, loading, error };
+}
+
+// Subcomponent for the form fields
+interface EditUserFieldsProps {
+  formData: Partial<UserData>;
+  roles: Role[];
+  rolesLoading: boolean;
+  rolesError: string | null;
+  theme: string;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+}
+const EditUserFields: React.FC<EditUserFieldsProps> = ({
+  formData, roles, rolesLoading, rolesError, theme, handleChange
+}) => (
+  <>
+    <div className="mb-4">
+      <label htmlFor="name" className="block text-sm font-medium mb-1">Nombre:</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        value={formData.name ?? ''}
+        onChange={handleChange}
+        className={`w-full p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+        required
+      />
+    </div>
+    <div className="mb-4">
+      <label htmlFor="lastName" className="block text-sm font-medium mb-1">Apellido:</label>
+      <input
+        type="text"
+        id="lastName"
+        name="lastName"
+        value={formData.lastName ?? ''}
+        onChange={handleChange}
+        className={`w-full p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+        required
+      />
+    </div>
+    <div className="mb-4">
+      <label htmlFor="email" className="block text-sm font-medium mb-1">Email:</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        value={formData.email ?? ''}
+        onChange={handleChange}
+        className={`w-full p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+        required
+      />
+    </div>
+    <div className="mb-4">
+      <label htmlFor="password" className="block text-sm font-medium mb-1">Contraseña (dejar en blanco para no cambiar):</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        value={formData.password ?? ''}
+        onChange={handleChange}
+        className={`w-full p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+      />
+    </div>
+    <div className="mb-4">
+      <label htmlFor="roleId" className="block text-sm font-medium mb-1">Rol:</label>
+      {(() => {
+        if (rolesLoading) {
+          return <p>Cargando roles...</p>;
+        }
+        if (rolesError) {
+          return <p className="text-red-500">Error al cargar roles: {rolesError}</p>;
+        }
+        return (
+          <select
+            id="roleId"
+            name="roleId"
+            value={formData.roleId ?? ''}
+            onChange={handleChange}
+            className={`w-full p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
+            required
+          >
+            <option value="">Selecciona un rol</option>
+            {roles.map((role) => (
+              <option key={role.id} value={role.id}>
+                {role.name}
+              </option>
+            ))}
+          </select>
+        );
+      })()}
+    </div>
+  </>
+);
+
+const EditUserForm: React.FC<EditUserFormProps> = ({ userId, onClose, onUserUpdated, theme }) => {
+  const { roles, loading: rolesLoading, error: rolesError } = useRoles();
+  const { formData, setFormData, loading, error } = useUserData(userId);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -120,15 +211,12 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ userId, onClose, onUserUpda
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    setSubmitLoading(true);
     setSuccess(null);
 
     try {
       const token = localStorage.getItem('authToken');
-      if (!token) {
-        throw new Error('No autorizado: No se encontró el token de autenticación.');
-      }
+      if (!token) throw new Error('No autorizado: No se encontró el token de autenticación.');
 
       const payload: Partial<UserData> = {
         name: formData.name,
@@ -136,11 +224,7 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ userId, onClose, onUserUpda
         email: formData.email,
         roleId: formData.roleId,
       };
-
-      // Solo incluir la contraseña si se ha modificado
-      if (formData.password) {
-        payload.password = formData.password;
-      }
+      if (formData.password) payload.password = formData.password;
 
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/${userId}`, {
         method: 'PUT',
@@ -153,25 +237,25 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ userId, onClose, onUserUpda
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al actualizar el usuario.');
+        throw new Error(errorData.message ?? 'Error al actualizar el usuario.');
       }
 
       setSuccess('Usuario actualizado exitosamente.');
-      onUserUpdated(); // Notificar a la tabla para que recargue los datos
-      onClose(); // Cerrar el formulario después de la actualización exitosa
+      onUserUpdated();
+      onClose();
     } catch (err: any) {
-      setError(err.message);
+      setSuccess(err.message);
     } finally {
-      setLoading(false);
+      setSubmitLoading(false);
     }
   };
 
-  if (loading && userId) {
+  if ((loading || rolesLoading) && userId) {
     return <div className={`p-4 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>Cargando datos del usuario...</div>;
   }
 
-  if (error && userId) {
-    return <div className={`p-4 text-red-500 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>Error: {error}</div>;
+  if ((error || rolesError) && userId) {
+    return <div className={`p-4 text-red-500 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>Error: {error ?? rolesError}</div>;
   }
 
   return (
@@ -179,79 +263,15 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ userId, onClose, onUserUpda
       <div className={`p-6 rounded-lg shadow-lg w-full max-w-md ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
         <h2 className="text-2xl font-bold mb-4">Editar Usuario</h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium mb-1">Nombre:</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name || ''}
-              onChange={handleChange}
-              className={`w-full p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="lastName" className="block text-sm font-medium mb-1">Apellido:</label>
-            <input
-              type="text"
-              id="lastName"
-              name="lastName"
-              value={formData.lastName || ''}
-              onChange={handleChange}
-              className={`w-full p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium mb-1">Email:</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email || ''}
-              onChange={handleChange}
-              className={`w-full p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-medium mb-1">Contraseña (dejar en blanco para no cambiar):</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password || ''}
-              onChange={handleChange}
-              className={`w-full p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="roleId" className="block text-sm font-medium mb-1">Rol:</label>
-            {rolesLoading ? (
-              <p>Cargando roles...</p>
-            ) : rolesError ? (
-              <p className="text-red-500">Error al cargar roles: {rolesError}</p>
-            ) : (
-              <select
-                id="roleId"
-                name="roleId"
-                value={formData.roleId ?? ''} // Usar ?? para manejar undefined
-                onChange={handleChange}
-                className={`w-full p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
-                required
-              >
-                <option value="">Selecciona un rol</option>
-                {roles.map((role) => (
-                  <option key={role.id} value={role.id}>
-                    {role.name}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
+          <EditUserFields
+            formData={formData}
+            roles={roles}
+            rolesLoading={rolesLoading}
+            rolesError={rolesError}
+            theme={theme}
+            handleChange={handleChange}
+          />
           {success && <p className="text-green-500 mb-4">{success}</p>}
-          {error && <p className="text-red-500 mb-4">{error}</p>}
           <div className="flex justify-end space-x-4">
             <button
               type="button"
@@ -262,10 +282,10 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ userId, onClose, onUserUpda
             </button>
             <button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              disabled={loading}
+              className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded"
+              disabled={submitLoading}
             >
-              {loading ? 'Guardando...' : 'Guardar Cambios'}
+              {submitLoading ? 'Guardando...' : 'Guardar Cambios'}
             </button>
           </div>
         </form>

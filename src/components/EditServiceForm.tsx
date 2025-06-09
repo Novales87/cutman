@@ -136,7 +136,7 @@ const EditServiceForm: React.FC<EditServiceFormProps> = ({ serviceId, onClose, o
               type="text"
               id="name"
               name="name"
-              value={formData.name || ''}
+              value={formData.name ?? ''}
               onChange={handleChange}
               className={`w-full p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               required
@@ -147,7 +147,7 @@ const EditServiceForm: React.FC<EditServiceFormProps> = ({ serviceId, onClose, o
             <textarea
               id="description"
               name="description"
-              value={formData.description || ''}
+              value={formData.description ?? ''}
               onChange={handleChange}
               className={`w-full p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               rows={3}
@@ -160,7 +160,7 @@ const EditServiceForm: React.FC<EditServiceFormProps> = ({ serviceId, onClose, o
               type="number"
               id="price"
               name="price"
-              value={formData.price || 0}
+              value={formData.price ?? 0}
               onChange={handleChange}
               className={`w-full p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               required
@@ -172,7 +172,7 @@ const EditServiceForm: React.FC<EditServiceFormProps> = ({ serviceId, onClose, o
               type="text"
               id="duration"
               name="duration"
-              value={formData.duration || ''}
+              value={formData.duration ?? ''}
               onChange={handleChange}
               className={`w-full p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
               placeholder="Ej: 30 minutos"
@@ -191,7 +191,7 @@ const EditServiceForm: React.FC<EditServiceFormProps> = ({ serviceId, onClose, o
             </button>
             <button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded"
               disabled={loading}
             >
               {loading ? 'Guardando...' : 'Guardar Cambios'}

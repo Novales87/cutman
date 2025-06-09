@@ -6,9 +6,10 @@ import ServiceTable from './ServiceTable';
 
 interface AdminDashboardProps {
   theme: string;
+  toggleTheme: () => void;
 }
 
-const AdminDashboard: React.FC<AdminDashboardProps> = ({ theme }) => {
+const AdminDashboard: React.FC<AdminDashboardProps> = ({ theme, toggleTheme }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentView, setCurrentView] = useState<'overview' | 'users' | 'appointments' | 'services' | 'settings'>('overview'); // Estado para controlar la vista
   const currentYear = new Date().getFullYear(); // Obtener el año actual
@@ -19,7 +20,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ theme }) => {
       <header className="bg-gray-800 dark:bg-gray-950 text-white p-4 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           <h2 className="text-2xl font-bold">Panel de Administración</h2>
-          {/* Botón de tema eliminado */}
+          {/* Botón de tema */}
+          <button
+            onClick={toggleTheme}
+            className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800"
+            style={{ backgroundColor: theme === 'dark' ? '#000000' : '#d1d5db' }}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+              style={{ transform: theme === 'dark' ? 'translateX(20px)' : 'translateX(2px)' }}
+            />
+          </button>
           {/* Botón de hamburguesa para móviles */}
           <button
             className="md:hidden text-white focus:outline-none ml-4" // Añadir margen para separar del botón de tema

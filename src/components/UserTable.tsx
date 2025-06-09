@@ -149,7 +149,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
         </div>
         <button
           onClick={() => setIsCreatingUser(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
         >
           Agregar
         </button>
@@ -206,7 +206,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
                       onClick={() => setEditingUserId(user.id)}
-                      className="text-blue-400 hover:text-blue-300"
+                      className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded"
                     >
                       Editar
                     </button>
@@ -245,7 +245,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
         <button
           onClick={handlePrevPage}
           disabled={currentPage === 1}
-          className={`px-4 py-2 rounded ${currentPage === 1 ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+          className={`px-4 py-2 rounded ${currentPage === 1 ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-gray-700 hover:bg-gray-600 text-white'}`}
         >
           Anterior
         </button>
@@ -255,7 +255,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
         <button
           onClick={handleNextPage}
           disabled={!hasMore}
-          className={`px-4 py-2 rounded ${!hasMore ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+          className={`px-4 py-2 rounded ${!hasMore ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-gray-700 hover:bg-gray-600 text-white'}`}
         >
           Siguiente
         </button>
