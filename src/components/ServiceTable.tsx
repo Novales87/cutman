@@ -25,7 +25,7 @@ interface ServiceTableProps {
 const ServiceTable: React.FC<ServiceTableProps> = ({ theme }) => {
   const [services, setServices] = useState<Service[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -58,7 +58,7 @@ const ServiceTable: React.FC<ServiceTableProps> = ({ theme }) => {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || 'Error al cargar servicios');
+          throw new Error(errorData.message ?? 'Error al cargar servicios');
         }
 
         const data: ApiResponse = await response.json();
@@ -98,13 +98,13 @@ const ServiceTable: React.FC<ServiceTableProps> = ({ theme }) => {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h2 className="text-2xl font-bold">Servicios</h2>
-          <p className="text-sm text-gray-400">Una lista de todos los servicios disponibles.</p>
+          <p className="text-sm text-gray-400">Servicios disponibles.</p>
         </div>
         <button
           onClick={() => setIsCreatingService(true)}
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
-          Agregar servicio
+          Agregar
         </button>
       </div>
 

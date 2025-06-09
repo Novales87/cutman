@@ -18,7 +18,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ theme }) => {
       {/* Header */}
       <header className="bg-gray-800 dark:bg-gray-950 text-white p-4 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Panel de Administración</h1>
+          <h2 className="text-2xl font-bold">Panel de Administración</h2>
           {/* Botón de tema eliminado */}
           {/* Botón de hamburguesa para móviles */}
           <button
