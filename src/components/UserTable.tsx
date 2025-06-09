@@ -36,7 +36,7 @@ interface UserTableProps {
 const UserTable: React.FC<UserTableProps> = ({ theme }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -145,13 +145,13 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h2 className="text-2xl font-bold">Usuarios</h2>
-          <p className="text-sm text-gray-400">Una lista de todos los usuarios en tu cuenta, incluyendo su nombre, título, email y rol.</p>
+          <p className="text-sm text-gray-400">Lista de Usuarios</p>
         </div>
         <button
           onClick={() => setIsCreatingUser(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
         >
-          Agregar usuario
+          Agregar
         </button>
       </div>
 
@@ -190,7 +190,6 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
             <thead className={`${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}`}>
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Nombre</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Título</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Email</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Rol</th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider"></th>
@@ -200,7 +199,6 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
               {users.map((user) => (
                 <tr key={user.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{user.name} {user.lastName}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm"></td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">{user.email}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     {rolesLoading ? 'Cargando...' : getRoleName(user.roleId)}
@@ -208,7 +206,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
                       onClick={() => setEditingUserId(user.id)}
-                      className="text-blue-400 hover:text-blue-300"
+                      className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded"
                     >
                       Editar
                     </button>
@@ -247,7 +245,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
         <button
           onClick={handlePrevPage}
           disabled={currentPage === 1}
-          className={`px-4 py-2 rounded ${currentPage === 1 ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+          className={`px-4 py-2 rounded ${currentPage === 1 ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-gray-700 hover:bg-gray-600 text-white'}`}
         >
           Anterior
         </button>
@@ -257,7 +255,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
         <button
           onClick={handleNextPage}
           disabled={!hasMore}
-          className={`px-4 py-2 rounded ${!hasMore ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+          className={`px-4 py-2 rounded ${!hasMore ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-gray-700 hover:bg-gray-600 text-white'}`}
         >
           Siguiente
         </button>

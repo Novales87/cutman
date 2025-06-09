@@ -10,136 +10,121 @@ import aperturaImage from './pictures/apertura.jpg';
 import Login from './components/Login';
 import AdminDashboard from './components/AdminDashboard'; // Importar el componente AdminDashboard
 
-function App() {
-  const [theme, setTheme] = useState(() => {
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    return 'light';
-  });
+interface AppContentProps {
+  readonly theme: string;
+  readonly toggleTheme: () => void;
+}
+
+function AppContent({ theme, toggleTheme }: AppContentProps) {
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+    const userRolId = localStorage.getItem('userRolId');
+    if (userRolId === '1') {
+      navigate('/admin-dashboard');
     }
-  }, [theme]);
+  }, [navigate]);
 
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
-  };
+  const currentYear = new Date().getFullYear();
 
-  function AppContent() {
-    const navigate = useNavigate();
-
-    useEffect(() => {
-      const userRolId = localStorage.getItem('userRolId');
-      if (userRolId === '1') {
-        navigate('/admin-dashboard');
-      }
-    }, [navigate]);
-
-    const currentYear = new Date().getFullYear();
-
-    return (
-      <div className="min-h-screen bg-white dark:bg-gray-900 overflow-hidden">
-        {/* Header */}
-        <header className="bg-gray-800 text-white dark:bg-gray-950">
-          <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <Scissors className="w-8 h-8" />
-              <div>
-                <span className="text-2xl font-bold block">The Cutman CO.</span>
-                <span className="text-sm block ml-4">Barber & Outfitters.</span>
-              </div>
+  return (
+    <div className="min-h-screen bg-white dark:bg-gray-900 overflow-hidden">
+      {/* Header */}
+      <header className="bg-gray-800 text-white dark:bg-gray-950">
+        <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            <Scissors className="w-8 h-8" />
+            <div>
+              <span className="text-2xl font-bold block">The Cutman CO.</span>
+              <span className="text-sm block ml-4">Barber & Outfitters.</span>
             </div>
-            <div className="flex space-x-4 items-center">
-              <a href="#servicios" className="text-base hover:text-gray-200 hidden md:block">Servicios</a>
-              <a href="#horario" className="text-base hover:text-gray-200 hidden md:block">Horario</a>
-              <a href="#ubicacion" className="text-base hover:text-gray-200 hidden md:block">Ubicación</a>
-              <a href="#contacto" className="text-base hover:text-gray-200 hidden md:block">Contacto</a>
-              <button onClick={() => navigate('/login')} className="text-base hover:text-gray-200">Login</button>
-            <button
-              onClick={toggleTheme}
-              className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800"
-              style={{ backgroundColor: theme === 'dark' ? '#000000' : '#d1d5db' }} // Negro para oscuro, gris para claro
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                style={{ transform: theme === 'dark' ? 'translateX(20px)' : 'translateX(2px)' }}
-              />
-            </button>
-            </div>
-          </nav>
-        </header>
-
-        {/* Hero Section */}
-        <section id="hero" className="relative h-[600px]">
-          <div className="absolute inset-0">
-            <img
-              src={portadaImage}
-              alt="Salon de belleza"
-              className="w-full h-full object-cover"
+          </div>
+          <div className="flex space-x-4 items-center">
+            <a href="#servicios" className="text-base hover:text-gray-200 hidden md:block">Servicios</a>
+            <a href="#horario" className="text-base hover:text-gray-200 hidden md:block">Horario</a>
+            <a href="#ubicacion" className="text-base hover:text-gray-200 hidden md:block">Ubicación</a>
+            <a href="#contacto" className="text-base hover:text-gray-200 hidden md:block">Contacto</a>
+            <button onClick={() => navigate('/login')} className="text-base hover:text-gray-200">Login</button>
+          <button
+            onClick={toggleTheme}
+            className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800"
+            style={{ backgroundColor: theme === 'dark' ? '#000000' : '#d1d5db' }} // Negro para oscuro, gris para claro
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+              style={{ transform: theme === 'dark' ? 'translateX(20px)' : 'translateX(2px)' }}
             />
-            <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+          </button>
           </div>
-          <div className="relative container mx-auto px-6 h-full flex items-center">
-            <div className="text-white dark:text-gray-100 max-w-2xl">
-              <h1 className="text-5xl font-bold mb-4">VIVÍ TU MEJOR EXPERIENCIA EN THE CUTMAN</h1>
-              <p className="text-xl mb-8">Descubrí nuestros servicios profesionales de peluquería y estética</p>
-            </div>
-          </div>
-        </section>
+        </nav>
+      </header>
 
-        {/* Services Section */}
-        <section id="servicios" className="py-20 bg-gray-50 dark:bg-gray-800">
-          <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">Nuestros Servicios</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  id: 'corte-cabello',
-                  title: 'Corte de Cabello',
-                  price: '$10.800,00',
-                  Time: 'Duración 30 minutos',
-                  image: corteCabelloImage
-                },
-                {
-                  id: 'corte-barba',
-                  title: 'Corte y Barba',
-                  price: '$11.300,00',
-                  Time: 'Duración 40 minutos',
-                  image: corteBarbaImage
-                },
-                {
-                  id: 'barba',
-                  title: 'Barba',
-                  price: '$5.100,00',
-                  Time: 'Duración 30 minutos',
-                  image: barbaImage
-                },
-              ].map((service) => (
-                <div key={service.id} className="bg-white dark:bg-gray-700 rounded-lg overflow-hidden shadow-lg">
-                  <img src={service.image} alt={service.title} className="w-full h-96 object-cover" />
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">{service.title}</h3>
-                    <p className="text-gray-800 font-bold dark:text-gray-200">{service.price}</p>
-                    <p className="text-gray-800 font-bold dark:text-gray-200">{service.Time}</p>
-                  </div>
+      {/* Hero Section */}
+      <section id="hero" className="relative h-[600px]">
+        <div className="absolute inset-0">
+          <img
+            src={portadaImage}
+            alt="Salon de belleza"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        </div>
+        <div className="relative container mx-auto px-6 h-full flex items-center">
+          <div className="text-white dark:text-gray-100 max-w-2xl">
+            <h1 className="text-5xl font-bold mb-4">VIVÍ TU MEJOR EXPERIENCIA EN THE CUTMAN</h1>
+            <p className="text-xl mb-8">Descubrí nuestros servicios profesionales de peluquería y estética</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="servicios" className="py-20 bg-gray-50 dark:bg-gray-800">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">Nuestros Servicios</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                id: 'corte-cabello',
+                title: 'Corte de Cabello',
+                price: '$10.800,00',
+                Time: 'Duración 30 minutos',
+                image: corteCabelloImage
+              },
+              {
+                id: 'corte-barba',
+                title: 'Corte y Barba',
+                price: '$11.300,00',
+                Time: 'Duración 40 minutos',
+                image: corteBarbaImage
+              },
+              {
+                id: 'barba',
+                title: 'Barba',
+                price: '$5.100,00',
+                Time: 'Duración 30 minutos',
+                image: barbaImage
+              },
+            ].map((service) => (
+              <div key={service.id} className="bg-white dark:bg-gray-700 rounded-lg overflow-hidden shadow-lg">
+                <img src={service.image} alt={service.title} className="w-full h-96 object-cover" />
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">{service.title}</h3>
+                  <p className="text-gray-800 font-bold dark:text-gray-200">{service.price}</p>
+                  <p className="text-gray-800 font-bold dark:text-gray-200">{service.Time}</p>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Schedule Section */}
-        <section id="horario" className="py-20 bg-white dark:bg-gray-900">
-          <div className="container mx-auto px-6">
-            <div className="flex flex-col md:flex-row items-center justify-between">
-              <div className="md:w-1/2 mb-8 md:mb-0">
-                <h2 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">Horario de Atención</h2>
-                <div className="space-y-4">
+      {/* Schedule Section */}
+      <section id="horario" className="py-20 bg-white dark:bg-gray-900">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="md:w-1/2 mb-8 md:mb-0">
+              <h2 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">Horario de Atención</h2>
+              <div className="space-y-4">
                   <div className="flex items-center">
                     <Clock className="w-6 h-6 text-gray-800 dark:text-gray-200 mr-4" />
                     <div>
@@ -147,7 +132,7 @@ function App() {
                       <p className="text-gray-800 dark:text-gray-200">10:00 - 20:00</p>
                     </div>
                   </div>
-                  </div>
+                </div>
               </div>
               <div className="md:w-1/2">
                 <img
@@ -199,25 +184,45 @@ function App() {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer id="contacto" className="bg-gray-800 text-white dark:bg-gray-950 py-6">
-          <div className="container mx-auto px-6 text-center justify-center">
-            <p>© {currentYear} The Cutman Co. Todos los derechos reservados.</p>
-          </div>
-        </footer>
+      {/* Footer */}
+      <footer id="contacto" className="bg-gray-800 text-white dark:bg-gray-950 py-6">
+        <div className="container mx-auto px-6 text-center justify-center">
+          <p>© {currentYear} The Cutman Co. Todos los derechos reservados.</p>
+        </div>
+      </footer>
 
-        {/* Chat Component */}
-        <Chat />
-      </div>
-    );
-  }
+      {/* Chat Component */}
+      <Chat />
+    </div>
+  );
+}
+
+function App() {
+  const [theme, setTheme] = useState(() => {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  });
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<AppContent />} />
+        <Route path="/" element={<AppContent theme={theme} toggleTheme={toggleTheme} />} />
         <Route path="/login" element={<Login theme={theme} />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard theme={theme} />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard theme={theme} toggleTheme={toggleTheme} />} />
       </Routes>
     </Router>
   );
