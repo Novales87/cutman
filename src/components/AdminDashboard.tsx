@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { Menu, X, Sun, Moon } from 'lucide-react'; // Importar iconos de menú, cerrar, sol y luna
-import Footer from './Footer'; // Importar el componente Footer
-import UserTable from './UserTable'; // Importar el componente UserTable
-import ServiceTable from './ServiceTable'; // Importar el componente ServiceTable
+import { Menu, X } from 'lucide-react';
+import Footer from './Footer';
+import UserTable from './UserTable';
+import ServiceTable from './ServiceTable';
 
 interface AdminDashboardProps {
   theme: string;
-  toggleTheme: () => void;
 }
 
-const AdminDashboard: React.FC<AdminDashboardProps> = ({ theme, toggleTheme }) => {
+const AdminDashboard: React.FC<AdminDashboardProps> = ({ theme }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentView, setCurrentView] = useState<'overview' | 'users' | 'appointments' | 'services' | 'settings'>('overview'); // Estado para controlar la vista
   const currentYear = new Date().getFullYear(); // Obtener el año actual
@@ -20,17 +19,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ theme, toggleTheme }) =
       <header className="bg-gray-800 dark:bg-gray-950 text-white p-4 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-bold">Panel de Administración</h1>
-          {/* Botón de tema */}
-          <button
-            onClick={toggleTheme}
-            className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800"
-            style={{ backgroundColor: theme === 'dark' ? '#000000' : '#d1d5db' }} // Negro para oscuro, gris para claro
-          >
-            <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-              style={{ transform: theme === 'dark' ? 'translateX(20px)' : 'translateX(2px)' }}
-            />
-          </button>
+          {/* Botón de tema eliminado */}
           {/* Botón de hamburguesa para móviles */}
           <button
             className="md:hidden text-white focus:outline-none ml-4" // Añadir margen para separar del botón de tema
@@ -42,10 +31,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ theme, toggleTheme }) =
           {/* Navegación de escritorio */}
           <nav className="hidden md:block">
             <ul className="flex space-x-4">
-              <li><a href="#" onClick={() => setCurrentView('users')} className="hover:underline">Usuarios</a></li>
-              <li><a href="#" onClick={() => setCurrentView('appointments')} className="hover:underline">Citas</a></li>
-              <li><a href="#" onClick={() => setCurrentView('services')} className="hover:underline">Servicios</a></li>
-              <li><a href="#" onClick={() => setCurrentView('settings')} className="hover:underline">Configuración</a></li>
+              <li><button type="button" onClick={() => setCurrentView('users')} className="hover:underline px-3 py-1 rounded hover:bg-gray-700">Usuarios</button></li>
+              <li><button type="button" onClick={() => setCurrentView('appointments')} className="hover:underline px-3 py-1 rounded hover:bg-gray-700">Citas</button></li>
+              <li><button type="button" onClick={() => setCurrentView('services')} className="hover:underline px-3 py-1 rounded hover:bg-gray-700">Servicios</button></li>
+              <li><button type="button" onClick={() => setCurrentView('settings')} className="hover:underline px-3 py-1 rounded hover:bg-gray-700">Configuración</button></li>
               <li><button onClick={() => {
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('userRole');
@@ -59,10 +48,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ theme, toggleTheme }) =
         {isMobileMenuOpen && (
           <nav className="md:hidden mt-4">
             <ul className="flex flex-col space-y-2">
-              <li><a href="#" onClick={() => { setCurrentView('users'); setIsMobileMenuOpen(false); }} className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Usuarios</a></li>
-              <li><a href="#" onClick={() => { setCurrentView('appointments'); setIsMobileMenuOpen(false); }} className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Citas</a></li>
-              <li><a href="#" onClick={() => { setCurrentView('services'); setIsMobileMenuOpen(false); }} className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Servicios</a></li>
-              <li><a href="#" onClick={() => { setCurrentView('settings'); setIsMobileMenuOpen(false); }} className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Configuración</a></li>
+              <li><button type="button" onClick={() => { setCurrentView('users'); setIsMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Usuarios</button></li>
+              <li><button type="button" onClick={() => { setCurrentView('appointments'); setIsMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Citas</button></li>
+              <li><button type="button" onClick={() => { setCurrentView('services'); setIsMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Servicios</button></li>
+              <li><button type="button" onClick={() => { setCurrentView('settings'); setIsMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Configuración</button></li>
               <li><button onClick={() => {
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('userRole');

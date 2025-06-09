@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react'; // Importar useCallback
-import EditUserForm from './EditUserForm'; // Importar el componente EditUserForm
-import CreateUserForm from './CreateUserForm'; // Importar el componente CreateUserForm
+import React, { useState, useEffect, useCallback } from 'react';
+import EditUserForm from './EditUserForm';
+import CreateUserForm from './CreateUserForm';
 
 interface Role {
   id: number;
@@ -36,20 +36,18 @@ interface UserTableProps {
 const UserTable: React.FC<UserTableProps> = ({ theme }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10); // perPage es fijo según la URL de la API
+  const [perPage, setPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(true); // Para controlar si hay más páginas
-  const [totalPages, setTotalPages] = useState(0); // Nuevo estado para totalPages
-  const [editingUserId, setEditingUserId] = useState<number | null>(null); // Estado para el ID del usuario a editar
-  const [isCreatingUser, setIsCreatingUser] = useState(false); // Estado para controlar la creación de usuario
-  const [refetchTrigger, setRefetchTrigger] = useState(0); // Nuevo estado para forzar la recarga
-  const [roles, setRoles] = useState<Role[]>([]); // Nuevo estado para los roles
+  const [hasMore, setHasMore] = useState(true);
+  const [totalPages, setTotalPages] = useState(0);
+  const [editingUserId, setEditingUserId] = useState<number | null>(null);
+  const [isCreatingUser, setIsCreatingUser] = useState(false);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [rolesLoading, setRolesLoading] = useState(true);
-  const [rolesError, setRolesError] = useState<string | null>(null);
 
-  // Función para obtener el nombre del rol
   const getRoleName = useCallback((roleId: number) => {
     const role = roles.find(r => r.id === roleId);
     return role ? role.name : 'Desconocido';
@@ -58,7 +56,6 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
   useEffect(() => {
     const fetchRoles = async () => {
       setRolesLoading(true);
-      setRolesError(null);
       try {
         const token = localStorage.getItem('authToken');
         if (!token) {
@@ -71,19 +68,19 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
         });
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || 'Error al cargar los roles.');
+          throw new Error(errorData.message ?? 'Error al cargar los roles.');
         }
         const data: Role[] = await response.json();
         setRoles(data);
       } catch (err: any) {
-        setRolesError(err.message);
+        console.error('Error al cargar roles:', err.message);
       } finally {
         setRolesLoading(false);
       }
     };
 
     fetchRoles();
-  }, []); // Se ejecuta una sola vez al montar el componente
+  }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -108,17 +105,16 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || 'Error al cargar usuarios');
+          throw new Error(errorData.message ?? 'Error al cargar usuarios');
         }
 
         const data: ApiResponse = await response.json();
 
         setUsers(data.data);
         setCurrentPage(data.page);
-        setPerPage(data.perPage); // Sincronizar perPage con la API
-        setTotalPages(data.totalPages); // Actualizar el estado totalPages
-        setHasMore(data.page < data.totalPages); // Hay más si la página actual es menor que el total de páginas
-        // También podemos usar data.totalResults si necesitamos el total exacto para algo más
+        setPerPage(data.perPage);
+        setTotalPages(data.totalPages);
+        setHasMore(data.page < data.totalPages);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -127,7 +123,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
     };
 
     fetchUsers();
-  }, [currentPage, perPage, searchQuery, refetchTrigger]); // Añadir refetchTrigger a las dependencias
+  }, [currentPage, perPage, searchQuery, refetchTrigger]);
 
   const handleNextPage = () => {
     setCurrentPage(currentPage + 1);
@@ -141,7 +137,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-    setCurrentPage(1); // Resetear a la primera página en cada búsqueda
+    setCurrentPage(1);
   };
 
   return (
@@ -174,7 +170,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
             value={perPage}
             onChange={(e) => {
               setPerPage(Number(e.target.value));
-              setCurrentPage(1); // Resetear a la primera página al cambiar perPage
+              setCurrentPage(1);
             }}
             className={`p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
           >
@@ -204,7 +200,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
               {users.map((user) => (
                 <tr key={user.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{user.name} {user.lastName}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm"></td> {/* No hay 'title' en la API */}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm"></td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">{user.email}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     {rolesLoading ? 'Cargando...' : getRoleName(user.roleId)}
@@ -229,8 +225,8 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
           userId={editingUserId}
           onClose={() => setEditingUserId(null)}
           onUserUpdated={() => {
-            setEditingUserId(null); // Cerrar el formulario
-            setRefetchTrigger(prev => prev + 1); // Forzar recarga
+            setEditingUserId(null);
+            setRefetchTrigger(prev => prev + 1);
           }}
           theme={theme}
         />
@@ -240,8 +236,8 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
         <CreateUserForm
           onClose={() => setIsCreatingUser(false)}
           onUserCreated={() => {
-            setIsCreatingUser(false); // Cerrar el formulario
-            setRefetchTrigger(prev => prev + 1); // Forzar recarga
+            setIsCreatingUser(false);
+            setRefetchTrigger(prev => prev + 1);
           }}
           theme={theme}
         />
@@ -260,7 +256,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
         </span>
         <button
           onClick={handleNextPage}
-          disabled={!hasMore} // Deshabilitar si no hay más elementos en la página actual
+          disabled={!hasMore}
           className={`px-4 py-2 rounded ${!hasMore ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
         >
           Siguiente

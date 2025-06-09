@@ -55,7 +55,7 @@ const CreateServiceForm: React.FC<CreateServiceFormProps> = ({ onClose, onServic
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al crear el servicio.');
+        throw new Error(errorData.message ?? 'Error al crear el servicio.');
       }
 
       setSuccess('Servicio creado exitosamente.');

@@ -50,7 +50,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ onClose, onUserCreated,
         });
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || 'Error al cargar los roles.');
+        throw new Error(errorData.message ?? 'Error al cargar los roles.');
         }
         const data: Role[] = await response.json();
         setRoles(data);
@@ -99,7 +99,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ onClose, onUserCreated,
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al crear el usuario.');
+        throw new Error(errorData.message ?? 'Error al crear el usuario.');
       }
 
       setSuccess('Usuario creado exitosamente.');

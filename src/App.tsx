@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import { Scissors, Clock, Phone, MapPin, Sun, Moon } from 'lucide-react';
+import { Scissors, Clock, Phone, MapPin } from 'lucide-react';
 import Chat from './components/Chat';
 import corteCabelloImage from './pictures/corte.jpg';
 import corteBarbaImage from './pictures/corte y barba.jpg';
@@ -9,7 +9,6 @@ import portadaImage from './pictures/portada.jpg';
 import aperturaImage from './pictures/apertura.jpg';
 import Login from './components/Login';
 import AdminDashboard from './components/AdminDashboard'; // Importar el componente AdminDashboard
-import Footer from './components/Footer'; // Importar el componente Footer
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -217,8 +216,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<AppContent />} />
-        <Route path="/login" element={<Login onBackToHome={() => window.history.back()} theme={theme} toggleTheme={toggleTheme} />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard theme={theme} toggleTheme={toggleTheme} />} />
+        <Route path="/login" element={<Login theme={theme} />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard theme={theme} />} />
       </Routes>
     </Router>
   );

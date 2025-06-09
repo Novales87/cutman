@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import portada from '../pictures/portada.jpg';
-import { Sun, Moon } from 'lucide-react'; // Importar iconos de tema
 
 interface LoginProps {
-  onBackToHome: () => void;
   theme: string; // Añadir prop de tema
-  toggleTheme: () => void; // Añadir prop para cambiar tema
 }
 
-const Login: React.FC<LoginProps> = ({ onBackToHome, theme, toggleTheme }) => {
+const Login: React.FC<LoginProps> = ({ theme }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -25,11 +22,40 @@ const Login: React.FC<LoginProps> = ({ onBackToHome, theme, toggleTheme }) => {
     }
   }, []);
 
+  const handleLoginSuccess = (data: any) => {
+    console.log('Login exitoso:', data);
+    if (data.token) {
+      localStorage.setItem('authToken', data.token);
+    }
+    if (data.role) {
+      localStorage.setItem('userRole', data.role);
+    }
+    if (data.roleId) {
+      localStorage.setItem('userRolId', data.roleId);
+      if (Number(data.roleId) === 1) {
+        navigate('/admin-dashboard');
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const handleRememberMe = () => {
+    if (rememberMe) {
+      localStorage.setItem('rememberedEmail', email);
+      localStorage.setItem('rememberMeChecked', 'true');
+    } else {
+      localStorage.removeItem('rememberedEmail');
+      localStorage.removeItem('rememberMeChecked');
+    }
+  };
+
   const handleSubmitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Login - Email:', email);
     console.log('Login - Password:', password);
     console.log('Login - Remember Me:', rememberMe);
+    
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/login`, {
         method: 'POST',
@@ -41,35 +67,15 @@ const Login: React.FC<LoginProps> = ({ onBackToHome, theme, toggleTheme }) => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Login exitoso:', data);
-        if (data.token) {
-          localStorage.setItem('authToken', data.token);
+        const isAdminRedirected = handleLoginSuccess(data);
+        if (!isAdminRedirected) {
+          handleRememberMe();
+          navigate('/');
         }
-        if (data.role) {
-          localStorage.setItem('userRole', data.role);
-        }
-        if (data.roleId) { // La API devuelve 'roleId'
-          localStorage.setItem('userRolId', data.roleId); // Guardar como 'userRolId' para mantener consistencia con localStorage
-          if (Number(data.roleId) === 1) { // Redirigir si roleId es 1, convirtiendo a número
-            navigate('/admin-dashboard');
-            return; // Salir de la función para evitar redirecciones adicionales
-          }
-        }
-
-        if (rememberMe) {
-          localStorage.setItem('rememberedEmail', email);
-          localStorage.setItem('rememberMeChecked', 'true');
-        } else {
-          localStorage.removeItem('rememberedEmail');
-          localStorage.removeItem('rememberMeChecked');
-        }
-
-        // Si no es admin o no hay roleId, puedes redirigir a otra página por defecto o simplemente volver
-        navigate('/'); 
       } else {
         const errorData = await response.json();
         console.error('Error en el login:', errorData);
-        alert(`Error en el login: ${errorData.message || response.statusText}`);
+    alert(`Error en el login: ${errorData.message ?? response.statusText}`);
       }
     } catch (error) {
       console.error('Error de red o del servidor:', error);
@@ -150,24 +156,24 @@ const Login: React.FC<LoginProps> = ({ onBackToHome, theme, toggleTheme }) => {
               </button>
             </div>
             <div className="text-center mb-6">
-              <a href="#" onClick={() => setCurrentView('forgotPassword')} className={`inline-block align-baseline font-bold text-sm ${theme === 'dark' ? 'text-blue-400 hover:text-blue-300' : 'text-blue-500 hover:text-blue-800'}`}>
+              <button type="button" onClick={() => setCurrentView('forgotPassword')} className={`inline-block align-baseline font-bold text-sm ${theme === 'dark' ? 'text-blue-400 hover:text-blue-300' : 'text-blue-500 hover:text-blue-800'}`}>
                 Password Reset
-              </a>
+              </button>
             </div>
             <div className="text-center text-xs">
               By click on "Sign in now" you agree to{' '}
-              <a href="#" className={`inline-block align-baseline ${theme === 'dark' ? 'text-red-400 hover:text-red-300' : 'text-red-500 hover:text-red-700'}`}>
+              <button type="button" className={`inline-block align-baseline ${theme === 'dark' ? 'text-red-400 hover:text-red-300' : 'text-red-500 hover:text-red-700'}`}>
                 Terms of Service
-              </a>{' '}
+              </button>{' '}
               |{' '}
-              <a href="#" className={`inline-block align-baseline ${theme === 'dark' ? 'text-red-400 hover:text-red-300' : 'text-red-500 hover:text-red-700'}`}>
+              <button type="button" className={`inline-block align-baseline ${theme === 'dark' ? 'text-red-400 hover:text-red-300' : 'text-red-500 hover:text-red-700'}`}>
                 Privacy Policy
-              </a>
+              </button>
             </div>
             <div className="text-center mt-4">
-              <a href="#" onClick={() => setCurrentView('register')} className={`inline-block align-baseline font-bold text-sm ${theme === 'dark' ? 'text-blue-400 hover:text-blue-300' : 'text-blue-500 hover:text-blue-800'}`}>
+              <button type="button" onClick={() => setCurrentView('register')} className={`inline-block align-baseline font-bold text-sm ${theme === 'dark' ? 'text-blue-400 hover:text-blue-300' : 'text-blue-500 hover:text-blue-800'}`}>
                 Registrarme
-              </a>
+              </button>
             </div>
           </form>
         );
@@ -198,9 +204,9 @@ const Login: React.FC<LoginProps> = ({ onBackToHome, theme, toggleTheme }) => {
               </button>
             </div>
             <div className="text-center mt-4">
-              <a href="#" onClick={() => setCurrentView('login')} className={`inline-block align-baseline font-bold text-sm ${theme === 'dark' ? 'text-blue-400 hover:text-blue-300' : 'text-blue-500 hover:text-blue-800'}`}>
+              <button type="button" onClick={() => setCurrentView('login')} className={`inline-block align-baseline font-bold text-sm ${theme === 'dark' ? 'text-blue-400 hover:text-blue-300' : 'text-blue-500 hover:text-blue-800'}`}>
                 Volver al Login
-              </a>
+              </button>
             </div>
           </form>
         );
@@ -271,9 +277,9 @@ const Login: React.FC<LoginProps> = ({ onBackToHome, theme, toggleTheme }) => {
               </button>
             </div>
             <div className="text-center mt-4">
-              <a href="#" onClick={() => setCurrentView('login')} className={`inline-block align-baseline font-bold text-sm ${theme === 'dark' ? 'text-blue-400 hover:text-blue-300' : 'text-blue-500 hover:text-blue-800'}`}>
+              <button type="button" onClick={() => setCurrentView('login')} className={`inline-block align-baseline font-bold text-sm ${theme === 'dark' ? 'text-blue-400 hover:text-blue-300' : 'text-blue-500 hover:text-blue-800'}`}>
                 Volver al Login
-              </a>
+              </button>
             </div>
           </form>
         );

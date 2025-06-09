@@ -44,7 +44,7 @@ const EditServiceForm: React.FC<EditServiceFormProps> = ({ serviceId, onClose, o
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || 'Error al cargar los datos del servicio.');
+          throw new Error(errorData.message ?? 'Error al cargar los datos del servicio.');
         }
 
         const data: ServiceData = await response.json();
@@ -104,7 +104,7 @@ const EditServiceForm: React.FC<EditServiceFormProps> = ({ serviceId, onClose, o
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al actualizar el servicio.');
+        throw new Error(errorData.message ?? 'Error al actualizar el servicio.');
       }
 
       setSuccess('Servicio actualizado exitosamente.');
