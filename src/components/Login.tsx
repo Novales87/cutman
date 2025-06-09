@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import portada from '../pictures/portada.jpg';
 import { Sun, Moon } from 'lucide-react'; // Importar iconos de tema
 
@@ -13,13 +14,67 @@ const Login: React.FC<LoginProps> = ({ onBackToHome, theme, toggleTheme }) => {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [currentView, setCurrentView] = useState<'login' | 'forgotPassword' | 'register'>('login');
+  const navigate = useNavigate(); // Obtener la función de navegación
 
-  const handleSubmitLogin = (e: React.FormEvent) => {
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem('rememberedEmail');
+    const rememberMeChecked = localStorage.getItem('rememberMeChecked');
+    if (rememberedEmail && rememberMeChecked === 'true') {
+      setEmail(rememberedEmail);
+      setRememberMe(true);
+    }
+  }, []);
+
+  const handleSubmitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Login - Email:', email);
     console.log('Login - Password:', password);
     console.log('Login - Remember Me:', rememberMe);
-    alert('Simulando login...');
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Login exitoso:', data);
+        if (data.token) {
+          localStorage.setItem('authToken', data.token);
+        }
+        if (data.role) {
+          localStorage.setItem('userRole', data.role);
+        }
+        if (data.roleId) { // La API devuelve 'roleId'
+          localStorage.setItem('userRolId', data.roleId); // Guardar como 'userRolId' para mantener consistencia con localStorage
+          if (Number(data.roleId) === 1) { // Redirigir si roleId es 1, convirtiendo a número
+            navigate('/admin-dashboard');
+            return; // Salir de la función para evitar redirecciones adicionales
+          }
+        }
+
+        if (rememberMe) {
+          localStorage.setItem('rememberedEmail', email);
+          localStorage.setItem('rememberMeChecked', 'true');
+        } else {
+          localStorage.removeItem('rememberedEmail');
+          localStorage.removeItem('rememberMeChecked');
+        }
+
+        // Si no es admin o no hay roleId, puedes redirigir a otra página por defecto o simplemente volver
+        navigate('/'); 
+      } else {
+        const errorData = await response.json();
+        console.error('Error en el login:', errorData);
+        alert(`Error en el login: ${errorData.message || response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Error de red o del servidor:', error);
+      alert('No se pudo conectar con el servidor. Inténtalo de nuevo más tarde.');
+    }
   };
 
   const handleSubmitForgotPassword = (e: React.FormEvent) => {
@@ -242,15 +297,11 @@ const Login: React.FC<LoginProps> = ({ onBackToHome, theme, toggleTheme }) => {
         <div className={`w-full md:w-1/2 p-8 relative ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}`}> {/* Cambiar a bg-gray-900 para el formulario en modo oscuro */}
           <button
             type="button"
-            onClick={onBackToHome}
+            onClick={() => navigate(-1)} // Usar navigate(-1) para volver
             className={`absolute top-4 left-4 px-4 py-2 rounded-full text-sm font-semibold ${theme === 'dark' ? 'bg-gray-800 text-white hover:bg-gray-700 focus:ring-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-gray-400'}`}
             aria-label="Volver"
           >
             Volver
-          </button>
-          {/* Botón de tema para pantallas pequeñas */}
-          <button onClick={toggleTheme} className="absolute top-4 right-4 p-2 rounded-full bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
-            {theme === 'light' ? <Moon className="w-6 h-6 text-white" /> : <Sun className="w-6 h-6 text-white" />}
           </button>
           <h2 className="text-3xl font-bold mb-6 text-center mt-4">Sign in</h2> {/* Ajustar margen superior */}
           {renderForm()}
