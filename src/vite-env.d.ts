@@ -9,11 +9,12 @@ interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
 
+// Extender la interfaz Window globalmente
 declare global {
   interface Window {
-    env?: { // Hacemos 'env' opcional
+    env: {
       VITE_API_BASE_URL: string;
       [key: string]: string; // Para permitir otras variables VITE_
-    };
+    } | undefined; // Hacer que 'env' sea opcional en tiempo de ejecución
   }
 }
