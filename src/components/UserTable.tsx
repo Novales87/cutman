@@ -131,7 +131,6 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
 
   const handleDeleteClick = (user: User) => {
     setUserToDeleteId(user.id);
-    const role = roles.find(r => r.id === user.roleId);
     setIsDeleteModalOpen(true);
   };
 
