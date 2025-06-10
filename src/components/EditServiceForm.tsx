@@ -194,7 +194,7 @@ const EditServiceForm: React.FC<EditServiceFormProps> = ({ serviceId, onClose, o
               className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded"
               disabled={loading}
             >
-              {loading ? 'Guardando...' : 'Guardar Cambios'}
+              {loading ? 'Guardando...' : 'Guardar'}
             </button>
           </div>
         </form>

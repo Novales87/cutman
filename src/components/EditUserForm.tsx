@@ -285,7 +285,7 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ userId, onClose, onUserUpda
               className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded"
               disabled={submitLoading}
             >
-              {submitLoading ? 'Guardando...' : 'Guardar Cambios'}
+              {submitLoading ? 'Guardando...' : 'Guardar'}
             </button>
           </div>
         </form>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Pencil, Trash2 } from 'lucide-react'; // Importar iconos
 import EditUserForm from './EditUserForm';
 import CreateUserForm from './CreateUserForm';
+import DeleteConfirmationModal from './DeleteConfirmationModal'; // Importar el modal de confirmaciรณn
 
 interface Role {
   id: number;
@@ -47,6 +49,8 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
   const [refetchTrigger, setRefetchTrigger] = useState(0);
   const [roles, setRoles] = useState<Role[]>([]);
   const [rolesLoading, setRolesLoading] = useState(true);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Estado para controlar el modal de eliminaciรณn
+  const [userToDeleteId, setUserToDeleteId] = useState<number | null>(null); // ID del usuario a eliminar
 
   const getRoleName = useCallback((roleId: number) => {
     const role = roles.find(r => r.id === roleId);
@@ -59,7 +63,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
       try {
         const token = localStorage.getItem('authToken');
         if (!token) {
-          throw new Error('No autorizado: No se encontró el token de autenticación para roles.');
+          throw new Error('No autorizado: No se encontrรณ el token de autenticaciรณn para roles.');
         }
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/roles`, {
           headers: {
@@ -89,7 +93,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
       try {
         const token = localStorage.getItem('authToken');
         if (!token) {
-          setError('No autorizado: No se encontró el token de autenticación.');
+          setError('No autorizado: No se encontrรณ el token de autenticaciรณn.');
           setLoading(false);
           return;
         }
@@ -124,6 +128,49 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
 
     fetchUsers();
   }, [currentPage, perPage, searchQuery, refetchTrigger]);
+
+  const handleDeleteClick = (user: User) => {
+    setUserToDeleteId(user.id);
+    const role = roles.find(r => r.id === user.roleId);
+    const isAdmin = role && role.id === 1; // Verificar si el roleId es 1 para administrador
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (userToDeleteId === null) return;
+
+    setIsDeleteModalOpen(false); // Cerrar el modal
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        throw new Error('No autorizado: No se encontrรณ el token de autenticaciรณn.');
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/${userToDeleteId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message ?? 'Error al eliminar el usuario.');
+      }
+
+      setUsers(users.filter(user => user.id !== userToDeleteId));
+      setRefetchTrigger(prev => prev + 1); // Forzar recarga de la tabla
+      setUserToDeleteId(null); // Limpiar el ID
+    } catch (err: any) {
+      console.error('Error al eliminar usuario:', err.message);
+      alert(`Error al eliminar usuario: ${err.message}`); // Mantener un alert simple para errores de eliminaciรณn
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteModalOpen(false);
+    setUserToDeleteId(null);
+  };
 
   const handleNextPage = () => {
     setCurrentPage(currentPage + 1);
@@ -164,7 +211,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
           className={`flex-1 p-2 rounded border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
         />
         <div className="flex items-center space-x-2">
-          <label htmlFor="perPageSelect" className="text-sm">Elementos por página:</label>
+          <label htmlFor="perPageSelect" className="text-sm">Elementos por pรกgina:</label>
           <select
             id="perPageSelect"
             value={perPage}
@@ -203,13 +250,23 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     {rolesLoading ? 'Cargando...' : getRoleName(user.roleId)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button
-                      onClick={() => setEditingUserId(user.id)}
-                      className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded"
-                    >
-                      Editar
-                    </button>
+                  <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() => setEditingUserId(user.id)}
+                        className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mr-4"
+                        title="Editar"
+                      >
+                        <Pencil size={20} />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteClick(user)}
+                        className="text-red-600 hover:text-red-800"
+                        title="Eliminar"
+                      >
+                        <Trash2 size={20} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -217,6 +274,15 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
           </table>
         </div>
       )}
+
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        itemName="usuario"
+        theme={theme}
+        isWarning={userToDeleteId !== null && users.find(u => u.id === userToDeleteId)?.roleId === 1}
+      />
 
       {editingUserId && (
         <EditUserForm
@@ -250,7 +316,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
           Anterior
         </button>
         <span className="text-sm">
-          Página {currentPage} de {totalPages}
+          Pรกgina {currentPage} de {totalPages}
         </span>
         <button
           onClick={handleNextPage}

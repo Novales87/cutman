@@ -134,7 +134,7 @@ const CreateServiceForm: React.FC<CreateServiceFormProps> = ({ onClose, onServic
             </button>
             <button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-grey-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
               disabled={loading}
             >
               {loading ? 'Creando...' : 'Crear Servicio'}
