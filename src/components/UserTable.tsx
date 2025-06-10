@@ -132,7 +132,6 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
   const handleDeleteClick = (user: User) => {
     setUserToDeleteId(user.id);
     const role = roles.find(r => r.id === user.roleId);
-    const isAdmin = role && role.id === 1; // Verificar si el roleId es 1 para administrador
     setIsDeleteModalOpen(true);
   };
 
