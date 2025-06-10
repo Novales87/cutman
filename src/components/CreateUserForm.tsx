@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../utils/env';
 
 interface UserData {
   name: string;
@@ -43,7 +44,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ onClose, onUserCreated,
         if (!token) {
           throw new Error('No autorizado: No se encontró el token de autenticación para roles.');
         }
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/roles`, {
+        const response = await fetch(`${API_BASE_URL}/roles`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -88,7 +89,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({ onClose, onUserCreated,
         throw new Error('No autorizado: No se encontró el token de autenticación.');
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users`, {
+      const response = await fetch(`${API_BASE_URL}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

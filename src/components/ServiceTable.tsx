@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Pencil, Trash2 } from 'lucide-react'; // Importar iconos
+import { API_BASE_URL } from '../utils/env';
 import CreateServiceForm from './CreateServiceForm'; // Importar el componente CreateServiceForm
 import EditServiceForm from './EditServiceForm'; // Importar el componente EditServiceForm
 import DeleteConfirmationModal from './DeleteConfirmationModal'; // Importar el modal de confirmaciรณn
@@ -54,7 +55,7 @@ const ServiceTable: React.FC<ServiceTableProps> = ({ theme }) => {
         throw new Error('No autorizado: No se encontrรณ el token de autenticaciรณn.');
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/services/${serviceToDeleteId}`, {
+      const response = await fetch(`${API_BASE_URL}/services/${serviceToDeleteId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -90,7 +91,7 @@ const ServiceTable: React.FC<ServiceTableProps> = ({ theme }) => {
           throw new Error('No autorizado: No se encontrรณ el token de autenticaciรณn.');
         }
 
-        let url = `${import.meta.env.VITE_API_BASE_URL}/services?page=${currentPage}&perPage=${perPage}`;
+        let url = `${API_BASE_URL}/services?page=${currentPage}&perPage=${perPage}`;
         if (searchQuery) {
           url += `&search=${searchQuery}`;
         }

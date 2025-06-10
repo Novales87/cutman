@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../utils/env';
 
 interface UserData {
   id: number;
@@ -37,7 +38,7 @@ function useRoles() {
       try {
         const token = localStorage.getItem('authToken');
         if (!token) throw new Error('No autorizado: No se encontró el token de autenticación para roles.');
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/roles`, {
+        const response = await fetch(`${API_BASE_URL}/roles`, {
           headers: { 'Authorization': `Bearer ${token}` },
         });
         if (!response.ok) {
@@ -77,7 +78,7 @@ function useUserData(userId: number) {
       try {
         const token = localStorage.getItem('authToken');
         if (!token) throw new Error('No autorizado: No se encontró el token de autenticación.');
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/${userId}`, {
+        const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
           headers: { 'Authorization': `Bearer ${token}` },
         });
         if (!response.ok) {
@@ -226,7 +227,7 @@ const EditUserForm: React.FC<EditUserFormProps> = ({ userId, onClose, onUserUpda
       };
       if (formData.password) payload.password = formData.password;
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

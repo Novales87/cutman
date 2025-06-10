@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Pencil, Trash2 } from 'lucide-react'; // Importar iconos
+import { API_BASE_URL } from '../utils/env';
 import EditUserForm from './EditUserForm';
 import CreateUserForm from './CreateUserForm';
 import DeleteConfirmationModal from './DeleteConfirmationModal'; // Importar el modal de confirmaciรณn
@@ -65,7 +66,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
         if (!token) {
           throw new Error('No autorizado: No se encontrรณ el token de autenticaciรณn para roles.');
         }
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/roles`, {
+        const response = await fetch(`${API_BASE_URL}/roles`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -99,7 +100,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
         }
 
         const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/users/paginated?page=${currentPage}&perPage=${perPage}&search=${searchQuery}`,
+          `${API_BASE_URL}/users/paginated?page=${currentPage}&perPage=${perPage}&search=${searchQuery}`,
           {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -144,7 +145,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
         throw new Error('No autorizado: No se encontrรณ el token de autenticaciรณn.');
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/${userToDeleteId}`, {
+      const response = await fetch(`${API_BASE_URL}/users/${userToDeleteId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

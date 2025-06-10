@@ -10,14 +10,17 @@ COPY . .
 RUN npm run build
 
 # Etapa de Producción
-FROM node:20-alpine
+FROM nginx:alpine
 
-WORKDIR /app
+WORKDIR /usr/share/nginx/html
 
-COPY --from=builder /app/dist ./dist
-COPY package.json ./
-RUN npm install --production serve
+COPY --from=builder /app/dist .
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
-EXPOSE 3000
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-CMD ["npm", "start"]
+EXPOSE 80
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]

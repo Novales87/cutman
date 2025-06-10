@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_BASE_URL } from '../utils/env';
 
 interface ServiceData {
   name: string;
@@ -44,7 +45,7 @@ const CreateServiceForm: React.FC<CreateServiceFormProps> = ({ onClose, onServic
         throw new Error('No autorizado: No se encontró el token de autenticación.');
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/services`, {
+      const response = await fetch(`${API_BASE_URL}/services`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

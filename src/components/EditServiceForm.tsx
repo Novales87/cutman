@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../utils/env';
 
 interface ServiceData {
   id: number;
@@ -36,7 +37,7 @@ const EditServiceForm: React.FC<EditServiceFormProps> = ({ serviceId, onClose, o
           throw new Error('No autorizado: No se encontró el token de autenticación.');
         }
 
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/services/${serviceId}`, {
+        const response = await fetch(`${API_BASE_URL}/services/${serviceId}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -93,7 +94,7 @@ const EditServiceForm: React.FC<EditServiceFormProps> = ({ serviceId, onClose, o
         duration: formData.duration,
       };
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/services/${serviceId}`, {
+      const response = await fetch(`${API_BASE_URL}/services/${serviceId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

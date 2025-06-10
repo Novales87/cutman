@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import portada from '../pictures/portada.jpg';
+import { API_BASE_URL } from '../utils/env';
 
 interface LoginProps {
   theme: string; // Añadir prop de tema
@@ -57,7 +58,7 @@ const Login: React.FC<LoginProps> = ({ theme }) => {
     console.log('Login - Remember Me:', rememberMe);
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/login`, {
+      const response = await fetch(`${API_BASE_URL}/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
