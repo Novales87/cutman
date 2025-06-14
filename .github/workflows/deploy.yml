@@ -9,12 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Despliegue por SSH con contraseña
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v2.0.0
         with:
           host: "200.58.121.145"
           port: "5931"
           username: "armydevs-cutman"
           password: ${{ secrets.VPS_PASSWORD }}
+          # Usando autenticación solo por password
+          use_insecure_cipher: true
+          cipher: aes128-cbc
           script: |
             cd /home/armydevs-cutman/htdocs
             
