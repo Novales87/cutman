@@ -7,6 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: prueba # Especifica el entorno para acceder a los secretos de entorno
     steps:
       - name: Verificar secrets
         run: |
