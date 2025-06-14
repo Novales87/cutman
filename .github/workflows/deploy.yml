@@ -64,6 +64,9 @@ jobs:
             npm install --force # Usar --force si hay problemas con dependencias
             npm run build
 
+            # Asegurarse de que el directorio de despliegue exista
+            mkdir -p $DEPLOY_DIR
+
             # Limpiar el directorio de despliegue y mover archivos build
             # Asegúrate de que DEPLOY_DIR sea el directorio público de tu sitio
             rm -rf $DEPLOY_DIR/* # Elimina todo el contenido del directorio de despliegue
