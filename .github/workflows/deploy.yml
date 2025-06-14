@@ -1,30 +1,45 @@
-name: Deploy to VPS
+name: Deploy to CloudPanel
 
 on:
   push:
     branches: [ "githubaction" ]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - name: Despliegue por SSH con contraseña
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          port: ${{ secrets.VPS_PORT }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            cd /home/${{ secrets.VPS_USER }}/htdocs
+            
+            # Clonar o actualizar el repo
+            if [ ! -d "cutman" ]; then
+              git clone https://github.com/${{ github.repository }}.git cutman
+            fi
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+            cd cutman
+            git fetch origin
+            git checkout githubaction
+            git pull origin githubaction
 
-    - name: Install dependencies
-      run: npm install
+            # Instalar dependencias y build
+            npm install
+            npm run build
 
-    - name: Build app
-      run: npm run build
+            # Mover archivos build a directorio público
+            rm -rf /home/${{ secrets.VPS_USER }}/htdocs/cutman/public
+            cp -r dist /home/${{ secrets.VPS_USER }}/htdocs/cutman/public
 
-    - name: Install sshpass
-      run: sudo apt-get update && sudo apt-get install -y sshpass
-
-    - name: Deploy to VPS
-      run: |
-        # CloudPanel usa 8443 para su interfaz web, pero el despliegue es via SSH en puerto ${{ secrets.SSH_PORT }}
-        sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no -P ${{ secrets.SSH_PORT }} -r ./dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}
+            # Health check básico
+            if [ -f "/home/${{ secrets.VPS_USER }}/htdocs/cutman/public/index.html" ]; then
+              echo "✔️ Despliegue exitoso"
+            else
+              echo "❌ Error en el despliegue"
+              exit 1
+            fi
