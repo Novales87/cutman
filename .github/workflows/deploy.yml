@@ -30,7 +30,7 @@ jobs:
           debug: true
           script: |
             REPO_DIR="/home/armydevs-cutman/repo-cutman" # Directorio temporal para el repositorio
-            DEPLOY_DIR="/home/armydevs-cutman/htdocs" # Directorio donde se desplegará la aplicación
+            DEPLOY_DIR="/home/armydevs-cutman/htdocs/cutman.armydevs.com" # Directorio donde se desplegará la aplicación (según CloudPanel)
 
             # Instalar Node.js y npm si no están presentes
             if ! command -v node &> /dev/null
