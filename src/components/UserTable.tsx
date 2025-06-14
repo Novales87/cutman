@@ -165,6 +165,7 @@ const UserTable: React.FC<UserTableProps> = ({ theme }) => {
       alert(`Error al eliminar usuario: ${err.message}`); // Mantener un alert simple para errores de eliminaciรณn
     }
   };
+  
 
   const handleCancelDelete = () => {
     setIsDeleteModalOpen(false);
