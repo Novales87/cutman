@@ -23,37 +23,40 @@ jobs:
           port: "5931"
           username: "armydevs-cutman"
           password: ${{ secrets.VPS_PASSWORD }}
-          use_insecure_cipher: true
-          cipher: aes128-cbc
-          timeout: 60s
-          command_timeout: 10m
+          timeout: 120s # Aumentar el timeout inicial para conexiones lentas
+          command_timeout: 15m # Aumentar el timeout para comandos largos (npm install/build)
           envs: GITHUB_REPOSITORY=${{ github.repository }}
           debug: true
           script: |
-            cd /home/armydevs-cutman/htdocs
-            
+            REPO_DIR="/home/armydevs-cutman/repo-cutman" # Directorio temporal para el repositorio
+            DEPLOY_DIR="/home/armydevs-cutman/htdocs" # Directorio donde se desplegará la aplicación
+
+            # Crear directorio del repositorio si no existe
+            mkdir -p $REPO_DIR
+            cd $REPO_DIR
+
             # Clonar o actualizar el repo
-            if [ ! -d "cutman" ]; then
-              git clone https://github.com/${{ github.repository }}.git cutman
+            if [ ! -d ".git" ]; then
+              git clone https://github.com/${{ github.repository }}.git .
             fi
 
-            cd cutman
             git fetch origin
             git checkout githubaction
             git pull origin githubaction
 
             # Instalar dependencias y build
-            npm install
+            npm install --force # Usar --force si hay problemas con dependencias
             npm run build
 
-            # Mover archivos build a directorio público
-            rm -rf /home/armydevs-cutman/htdocs/cutman/public
-            cp -r dist /home/armydevs-cutman/htdocs/cutman/public
+            # Limpiar el directorio de despliegue y mover archivos build
+            # Asegúrate de que DEPLOY_DIR sea el directorio público de tu sitio
+            rm -rf $DEPLOY_DIR/* # Elimina todo el contenido del directorio de despliegue
+            cp -r dist/* $DEPLOY_DIR/ # Copia el contenido de dist directamente a htdocs
 
             # Health check básico
-            if [ -f "/home/armydevs-cutman/htdocs/cutman/public/index.html" ]; then
+            if [ -f "$DEPLOY_DIR/index.html" ]; then
               echo "✔️ Despliegue exitoso"
             else
-              echo "❌ Error en el despliegue"
+              echo "❌ Error en el despliegue: index.html no encontrado en $DEPLOY_DIR"
               exit 1
             fi
