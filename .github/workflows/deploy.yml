@@ -32,6 +32,21 @@ jobs:
             REPO_DIR="/home/armydevs-cutman/repo-cutman" # Directorio temporal para el repositorio
             DEPLOY_DIR="/home/armydevs-cutman/htdocs" # Directorio donde se desplegará la aplicación
 
+            # Instalar Node.js y npm si no están presentes
+            if ! command -v node &> /dev/null
+            then
+                echo "Node.js no encontrado. Instalando..."
+                curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+                [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+                nvm install node # Instala la última versión LTS de Node.js
+                nvm use node
+                echo "Node.js y npm instalados."
+            else
+                echo "Node.js ya está instalado."
+            fi
+
             # Crear directorio del repositorio si no existe
             mkdir -p $REPO_DIR
             cd $REPO_DIR
