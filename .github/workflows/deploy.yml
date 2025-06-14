@@ -11,12 +11,12 @@ jobs:
       - name: Despliegue por SSH con contraseña
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.VPS_HOST }}
-          port: ${{ secrets.VPS_PORT }}
-          username: ${{ secrets.VPS_USER }}
+          host: "200.58.121.145"
+          port: "5931"
+          username: "armydevs-cutman"
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
-            cd /home/${{ secrets.VPS_USER }}/htdocs
+            cd /home/armydevs-cutman/htdocs
             
             # Clonar o actualizar el repo
             if [ ! -d "cutman" ]; then
@@ -33,11 +33,11 @@ jobs:
             npm run build
 
             # Mover archivos build a directorio público
-            rm -rf /home/${{ secrets.VPS_USER }}/htdocs/cutman/public
-            cp -r dist /home/${{ secrets.VPS_USER }}/htdocs/cutman/public
+            rm -rf /home/armydevs-cutman/htdocs/cutman/public
+            cp -r dist /home/armydevs-cutman/htdocs/cutman/public
 
             # Health check básico
-            if [ -f "/home/${{ secrets.VPS_USER }}/htdocs/cutman/public/index.html" ]; then
+            if [ -f "/home/armydevs-cutman/htdocs/cutman/public/index.html" ]; then
               echo "✔️ Despliegue exitoso"
             else
               echo "❌ Error en el despliegue"
