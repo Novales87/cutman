@@ -8,6 +8,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Verificar secrets
+        run: |
+          echo "Verificando variables:"
+          echo "Host: 200.58.121.145"
+          echo "Port: 5931"
+          echo "Username: armydevs-cutman"
+          echo "Password: ${{ secrets.VPS_PASSWORD && '***** (configurado)' || 'NO CONFIGURADO' }}"
+
       - name: Despliegue por SSH con contraseña
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -15,9 +23,12 @@ jobs:
           port: "5931"
           username: "armydevs-cutman"
           password: ${{ secrets.VPS_PASSWORD }}
-          # Usando autenticación solo por password
           use_insecure_cipher: true
           cipher: aes128-cbc
+          timeout: 60s
+          command_timeout: 10m
+          envs: GITHUB_REPOSITORY=${{ github.repository }}
+          debug: true
           script: |
             cd /home/armydevs-cutman/htdocs
             
